@@ -7,7 +7,7 @@ provider "aws" {
 ########################################
 
 
-resource "aws_vpc" "vpc-gslb-ohio" {
+resource "aws_vpc" "vpc_gslb_ohio" {
   cidr_block           = "10.0.0.0/16"
   instance_tenancy     = "default"
   enable_dns_support   = "true"
@@ -15,7 +15,7 @@ resource "aws_vpc" "vpc-gslb-ohio" {
   enable_classiclink   = "false"
 
   tags = {
-    Name = "vpc-${var.tldn_name}-gslb-ohio"
+    Name = "vpc_${var.tldn_cluster_name}_gslb_ohio"
   }
 }
 
@@ -23,14 +23,14 @@ resource "aws_vpc" "vpc-gslb-ohio" {
 # BUILDING SUBNETS FOR VPC #
 ############################
 
-resource "aws_subnet" "f5-subnet-a" {
-  vpc_id                  = aws_vpc.vpc-gslb-ohio.id
+resource "aws_subnet" "f5_subnet_a" {
+  vpc_id                  = aws_vpc.vpc_gslb_ohio.id
   cidr_block              = "10.0.101.0/24"
   map_public_ip_on_launch = "true"
   availability_zone       = "${var.aws_region}a"
 
   tags = {
-    Name = "${aws_vpc.vpc-gslb-ohio.Name}-subnet-a"
+    Name = "${aws_vpc.vpc_gslb_ohio.tags.Name}_subnet_a"
   }
 }
 
@@ -39,15 +39,15 @@ resource "aws_subnet" "f5-subnet-a" {
 ######################################
 
 resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.vpc-gslb-ohio.id
+  vpc_id = aws_vpc.vpc_gslb_ohio.id
 
   tags = {
-    Name = "${aws_vpc.vpc-gslb-ohio.Name}-internet-gateway"
+    Name = "${aws_vpc.vpc_gslb_ohio.tags.Name}_internet_gateway"
   }
 }
 
 resource "aws_route_table" "rt1" {
-  vpc_id = aws_vpc.vpc-gslb-ohio.id
+  vpc_id = aws_vpc.vpc_gslb_ohio.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -55,12 +55,12 @@ resource "aws_route_table" "rt1" {
   }
 
   tags = {
-    Name = "${aws_vpc.vpc-gslb-ohio.Name}-DefaultRoute"
+    Name = "${aws_vpc.vpc_gslb_ohio.tags.Name}_DefaultRoute"
   }
 }
 
-resource "aws_main_route_table_association" "association-subnet" {
-  vpc_id         = aws_vpc.vpc-gslb-ohio.id
+resource "aws_main_route_table_association" "association_subnet" {
+  vpc_id         = aws_vpc.vpc_gslb_ohio.id
   route_table_id = aws_route_table.rt1.id
 }
 
