@@ -2,9 +2,13 @@ variable "aws_region" {
   description = "aws region (default is us-east-1)"
   default     = "us-east-1"
 }
-variable "fqdn_app_name" {
-  description = "fqdn app name, only hypens. example = app-example-com"
+variable "tldn_name" {
+  description = "tldn for cluster, only hypens. example = app1-example-com"
 }
+
+#variable "fqdn_app_name" {
+#  description = "fqdn app name, only hypens. example = app-example-com"
+#}
 
 
 ##############################
