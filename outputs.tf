@@ -1,9 +1,9 @@
 
 output "vpc_name" {
-  value = aws_vpc.vpc_gslb_ohio.tags.Name
+  value = aws_vpc.vpc_gslb_oregon.tags.Name
 }
 output "vpc_id" {
-  value = aws_vpc.vpc_gslb_ohio.id
+  value = aws_vpc.vpc_gslb_oregon.id
 }
 
 
