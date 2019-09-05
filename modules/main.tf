@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "${var.aws_region[var.dataCenter["ohio"]]}"
+  region = "${var.aws_region}"
 }
 
 ########################################
@@ -15,10 +15,10 @@ resource "aws_vpc" "gslb_vpc" {
   enable_classiclink   = "false"
 
   tags = {
-    Name = "${var.tldn_cluster_name}_gslb_${var.dataCenter["ohio"]}"
+    Name = "${var.tldn_cluster_name}_gslb_${var.dcX}"
   }
 }
-/*
+
 ###########################
 # BUILDING SUBNET FOR VPC #
 ###########################
@@ -114,4 +114,4 @@ resource "aws_instance" "f5_bigip" {
     Name = "${aws_vpc.gslb_vpc.tags.Name}_bigip_instance"
   }
 }
-*/
+

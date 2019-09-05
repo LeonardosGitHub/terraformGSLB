@@ -1,4 +1,4 @@
-/*
+
 output "vpc_name" {
   value = aws_vpc.gslb_vpc.tags.Name
 }
