@@ -98,7 +98,10 @@ resource "aws_security_group" "bigipexternalsecuritygroup" {
 ########################
 # BUILDING F5 INSTANCE #
 ########################
-
+resource "random_string" "password" {
+  length  = 10
+  special = false
+}
 
 resource "aws_instance" "f5_bigip" {
   ami                         = "${var.ami[var.which_az]}"
@@ -107,16 +110,10 @@ resource "aws_instance" "f5_bigip" {
   associate_public_ip_address = true                                               #(Optional) Associate a public ip address with an instance in a VPC. Boolean value.
   key_name                    = "${var.key_pair[var.which_az]}"                    #(Optional) The key name of the Key Pair to use for the instance
   vpc_security_group_ids      = [aws_security_group.bigipexternalsecuritygroup.id] #(Optional, VPC only) A list of security group IDs to associate with.
-
-  data "template_file" "f5_init" {
-    template = "${file("../scripts/f5.tpl")}"
-
-    vars = {
-      password = "${random_string.password.result}"
-    }
-  }
+  user_data                   = "${file("../scripts/f5.tpl")}"
   tags = {
     Name = "${aws_vpc.gslb_vpc.tags.Name}_bigip_instance"
   }
+
 }
 
