@@ -1,0 +1,37 @@
+  
+  #https://docs.ansible.com/ansible/latest/modules/terraform_module.html
+  - terraform:
+      project_path: '{{ project_dir }}'
+      state: present
+
+  # Define the backend configuration at init
+  - terraform:
+      project_path: 'project/'
+      state: "{{ state }}"
+      force_init: true
+      backend_config:
+        region: "eu-west-1"
+        bucket: "some-bucket"
+        key: "random.tfstate"
+
+  - name: Wait for BIG-IP on port 8443
+  wait_for:
+    host: "{{ hostvars[inventory_hostname].provider.server }}"
+    port: "{{ hostvars[inventory_hostname].provider.server_port }}"
+    delegate_to: localhost
+
+  - name: Change BIG-IP admin password
+  bigip_command:
+    provider:
+      server: "{{ hostvars[inventory_hostname].provider.server }}"
+      ssh_keyfile: "{{ ssh_keyfile }}"
+      transport: cli
+      user: "{{ hostvars[inventory_hostname].provider.user }}"
+      commands: modify auth user {{ hostvars[inventory_hostname].provider.user }} password {{ vpass }}
+      delegate_to: localhost
+
+  - name: Wait for API to be up
+  bigip_wait:
+    timeout: 150
+    provider: "{{ provider }}"
+    delegate_to: localhost
