@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "${var.aws_region}"
+  region = "${var.aws_region[var.which_az]}"
 }
 
 ########################################
@@ -8,14 +8,14 @@ provider "aws" {
 
 
 resource "aws_vpc" "gslb_vpc" {
-  cidr_block           = "10.0.101.0/24"
+  cidr_block           = "${var.vpc_cidr_block[var.which_az]}"
   instance_tenancy     = "default"
   enable_dns_support   = "true"
   enable_dns_hostnames = "true"
   enable_classiclink   = "false"
 
   tags = {
-    Name = "${var.tldn_cluster_name}_gslb_${var.dcX}"
+    Name = "${var.tldn_gslb_cluster_name}_gslb_${var.which_az}"
   }
 }
 
@@ -25,9 +25,9 @@ resource "aws_vpc" "gslb_vpc" {
 
 resource "aws_subnet" "f5_subnet_a" {
   vpc_id                  = aws_vpc.gslb_vpc.id
-  cidr_block              = "10.0.101.0/25"
+  cidr_block              = "${var.subnet_cidr_block[var.which_az]}"
   map_public_ip_on_launch = "true"
-  availability_zone       = "${var.aws_region}a"
+  availability_zone       = "${var.aws_region[var.which_az]}a"
 
   tags = {
     Name = "${aws_vpc.gslb_vpc.tags.Name}_subnet_a"
@@ -101,15 +101,20 @@ resource "aws_security_group" "bigipexternalsecuritygroup" {
 
 
 resource "aws_instance" "f5_bigip" {
-  ami                         = "${var.ami}"
+  ami                         = "${var.ami[var.which_az]}"
   instance_type               = "m5.large"
   subnet_id                   = aws_subnet.f5_subnet_a.id                          #(Optional) The VPC Subnet ID to launch in.
   associate_public_ip_address = true                                               #(Optional) Associate a public ip address with an instance in a VPC. Boolean value.
-  key_name                    = "${var.key_pair}"                                  #(Optional) The key name of the Key Pair to use for the instance
+  key_name                    = "${var.key_pair[var.which_az]}"                    #(Optional) The key name of the Key Pair to use for the instance
   vpc_security_group_ids      = [aws_security_group.bigipexternalsecuritygroup.id] #(Optional, VPC only) A list of security group IDs to associate with.
 
-  #private_ip = "" (Optional) Private IP address to associate with the instance in a VPC.
-  #availability_zone = "" (Optional) The AZ to start the instance in.
+  data "template_file" "f5_init" {
+    template = "${file("../scripts/f5.tpl")}"
+
+    vars = {
+      password = "${random_string.password.result}"
+    }
+  }
   tags = {
     Name = "${aws_vpc.gslb_vpc.tags.Name}_bigip_instance"
   }
