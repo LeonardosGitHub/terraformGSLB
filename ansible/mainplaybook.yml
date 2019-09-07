@@ -4,27 +4,36 @@
   hosts: 127.0.0.1
 
   vars: 
-    gslb_ohio: placeholder
+    aws_east_1: 
+      region_name: us-east-1
+      region_key: leonardo_f5_aws.pem
+    aws_east_2: 
+      region_name: us-east-2
+      region_key: f5_aws_acct_keypair.pem
+    aws_west_2: 
+      region_name: us-west-2
+      region_key: leonardo_oregon_aws.pem
     gslb_oregon: placeholder
-    project_dir: "../terraform/prod/"
-    ssh_keyfile: "~/.ssh/f5_aws_acct_keypair.pem"
+    project_dir: ../terraform/prod/{{aws_west_2.region_name}}
+    ssh_keyfile: "~/.ssh/{{aws_west_2.region_key}}"
     bigip_password: (password)
    
   tasks:
   #https://docs.ansible.com/ansible/latest/modules/terraform_module.html
   - name: Deploy resources using Terraform
     terraform:
+      force_init: yes
       project_path: '{{ project_dir }}'
       state: present
     register: return
 
-  - debug:
-     var: "return"
+  #- debug:
+  #   var: "return"
 
-  - debug:
-     var: return.outputs.big_ip_public_IPaddr.value
+  #- debug:
+  #   var: return.outputs.big_ip_public_IPaddr.value
 
-  - name: Wait for BIG-IP on port 8443
+  - name: Wait for BIG-IP to be available on port 8443 before proceeding < 600seconds
     wait_for:
       host: "{{return.outputs.big_ip_public_IPaddr.value}}"
       port: "8443"
@@ -39,11 +48,12 @@
         transport: cli
         user: admin
       commands: modify auth user admin password {{bigip_password}}
+      warn: no
     delegate_to: localhost
 
-  - name: Check for API accessability
+  - name: Wait for BIG-IP iControl REST to be available on port 8443 before proceeding < 600seconds
     bigip_wait:
-      timeout: 20
+      timeout: 600
       provider:
         server: "{{return.outputs.big_ip_public_IPaddr.value}}"
         server_port: 8443
@@ -52,4 +62,4 @@
         password: "{{ bigip_password }}"
     delegate_to: localhost
 
-  
+

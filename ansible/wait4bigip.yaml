@@ -1,0 +1,6 @@
+  - name: Wait for BIG-IP to be available on port 8443 before proceeding < 600seconds
+    wait_for:
+      host: "{{return.outputs.big_ip_public_IPaddr.value}}"
+      port: "8443"
+      timeout: 600
+    delegate_to: localhost

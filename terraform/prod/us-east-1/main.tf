@@ -1,15 +1,8 @@
 
 
 module "gtm" {
-  source                 = "../modules"
+  source                 = "../../modules"
   tldn_gslb_cluster_name = "clusterX_example_com"
-  which_az               = "us-east-2"
+  which_az               = "us-east-1"
 }
 
-/*
-module "gtm_oregon" {
-  source = "../modules"
-  tldn_gslb_cluster_name = "tldn_gslb"
-  which_az = "us-west-2"
-}
-*/

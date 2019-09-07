@@ -1,0 +1,13 @@
+  #https://docs.ansible.com/ansible/latest/modules/terraform_module.html
+  - name: Deploy resources using Terraform
+    terraform:
+      force_init: yes
+      project_path: '{{ project_dir }}'
+      state: present
+    register: return
+
+  #- debug:
+  #   var: "return"
+
+  #- debug:
+  #   var: return.outputs.big_ip_public_IPaddr.value

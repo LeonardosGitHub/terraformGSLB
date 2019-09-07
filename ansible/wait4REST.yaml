@@ -1,0 +1,10 @@
+  - name: Wait for BIG-IP iControl REST to be available on port 8443 before proceeding < 600seconds
+    bigip_wait:
+      timeout: 600
+      provider:
+        server: "{{return.outputs.big_ip_public_IPaddr.value}}"
+        server_port: 8443
+        validate_certs: no
+        user: admin
+        password: "{{ bigip_password }}"
+    delegate_to: localhost
