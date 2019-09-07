@@ -1,37 +1,53 @@
-  
+---  
+
+- name: Initial GSLB cluster build; create, base configuration, cluster configs, ready for production traffic
+  hosts: 127.0.0.1
+
+  vars: 
+    gslb_ohio: placeholder
+    gslb_oregon: placeholder
+    project_dir: "../terraform/prod/"
+    ssh_keyfile: "~/.ssh/f5_aws_acct_keypair.pem"
+    bigip_password: f5!se$ur9lE
+   
+  tasks:
   #https://docs.ansible.com/ansible/latest/modules/terraform_module.html
-  - terraform:
+  - name: Deploy resources using Terraform
+    terraform:
       project_path: '{{ project_dir }}'
       state: present
+    register: return
 
-  # Define the backend configuration at init
-  - terraform:
-      project_path: 'project/'
-      state: "{{ state }}"
-      force_init: true
-      backend_config:
-        region: "eu-west-1"
-        bucket: "some-bucket"
-        key: "random.tfstate"
+  - debug:
+     var: "return"
+
+  - debug:
+     var: return.outputs.big_ip_public_IPaddr.value
 
   - name: Wait for BIG-IP on port 8443
-  wait_for:
-    host: "{{ hostvars[inventory_hostname].provider.server }}"
-    port: "{{ hostvars[inventory_hostname].provider.server_port }}"
+    wait_for:
+      host: "{{return.outputs.big_ip_public_IPaddr.value}}"
+      port: "8443"
+      timeout: 600
     delegate_to: localhost
 
   - name: Change BIG-IP admin password
-  bigip_command:
-    provider:
-      server: "{{ hostvars[inventory_hostname].provider.server }}"
-      ssh_keyfile: "{{ ssh_keyfile }}"
-      transport: cli
-      user: "{{ hostvars[inventory_hostname].provider.user }}"
-      commands: modify auth user {{ hostvars[inventory_hostname].provider.user }} password {{ vpass }}
-      delegate_to: localhost
+    bigip_command:
+      provider:
+        server: "{{return.outputs.big_ip_public_IPaddr.value}}"
+        ssh_keyfile: "{{ ssh_keyfile }}"
+        transport: cli
+        user: admin
+      commands: modify auth user admin password {{bigip_password}}
+    delegate_to: localhost
 
   - name: Wait for API to be up
-  bigip_wait:
-    timeout: 150
-    provider: "{{ provider }}"
+    bigip_wait:
+      timeout: 20
+      provider:
+        server: "{{return.outputs.big_ip_public_IPaddr.value}}"
+        server_port: 8443
+        validate_certs: no
+        user: admin
+        password: "{{ bigip_password }}"
     delegate_to: localhost

@@ -28,7 +28,6 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
 
+# Ansible ignore
+*.retry
 
-#Don't include files that I've designated as backups
-
-*.ver.*
