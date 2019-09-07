@@ -8,7 +8,7 @@
     gslb_oregon: placeholder
     project_dir: "../terraform/prod/"
     ssh_keyfile: "~/.ssh/f5_aws_acct_keypair.pem"
-    bigip_password: f5!se$ur9lE
+    bigip_password: (password)
    
   tasks:
   #https://docs.ansible.com/ansible/latest/modules/terraform_module.html
@@ -41,7 +41,7 @@
       commands: modify auth user admin password {{bigip_password}}
     delegate_to: localhost
 
-  - name: Wait for API to be up
+  - name: Check for API accessability
     bigip_wait:
       timeout: 20
       provider:
@@ -51,3 +51,5 @@
         user: admin
         password: "{{ bigip_password }}"
     delegate_to: localhost
+
+  
