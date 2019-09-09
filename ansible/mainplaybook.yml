@@ -13,53 +13,23 @@
     aws_west_2: 
       region_name: us-west-2
       region_key: leonardo_oregon_aws.pem
-    gslb_oregon: placeholder
     project_dir: ../terraform/prod/{{aws_west_2.region_name}}
     ssh_keyfile: "~/.ssh/{{aws_west_2.region_key}}"
     bigip_password: (password)
    
   tasks:
-  #https://docs.ansible.com/ansible/latest/modules/terraform_module.html
-  - name: Deploy resources using Terraform
-    terraform:
-      force_init: yes
-      project_path: '{{ project_dir }}'
-      state: present
-    register: return
+  - name: initiating task_terraformDeploy
+    import_tasks: tasks/terraformDeploy.yml
+  - name: initiating task_wait4bigip
+    import_tasks: tasks/wait4bigip.yml
+  - name: initiating task_changeAdminPass
+    import_tasks: tasks/changeAdminPass.yml
+  - name: initiating task_wait4REST.yml
+    import_tasks: tasks/wait4REST.yml
 
-  #- debug:
-  #   var: "return"
-
-  #- debug:
-  #   var: return.outputs.big_ip_public_IPaddr.value
-
-  - name: Wait for BIG-IP to be available on port 8443 before proceeding < 600seconds
-    wait_for:
-      host: "{{return.outputs.big_ip_public_IPaddr.value}}"
-      port: "8443"
-      timeout: 600
-    delegate_to: localhost
-
-  - name: Change BIG-IP admin password
-    bigip_command:
-      provider:
-        server: "{{return.outputs.big_ip_public_IPaddr.value}}"
-        ssh_keyfile: "{{ ssh_keyfile }}"
-        transport: cli
-        user: admin
-      commands: modify auth user admin password {{bigip_password}}
-      warn: no
-    delegate_to: localhost
-
-  - name: Wait for BIG-IP iControl REST to be available on port 8443 before proceeding < 600seconds
-    bigip_wait:
-      timeout: 600
-      provider:
-        server: "{{return.outputs.big_ip_public_IPaddr.value}}"
-        server_port: 8443
-        validate_certs: no
-        user: admin
-        password: "{{ bigip_password }}"
-    delegate_to: localhost
+  #- import_tasks: 
+  #- import_tasks: task_changeAdminPass.yml
+  #- import_tasks: task_wait4REST.yml
+  
 
 
