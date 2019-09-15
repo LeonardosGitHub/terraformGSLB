@@ -1,0 +1,21 @@
+
+  - name: Create list of AWS public IPs
+    set_fact:
+      aws_public_ips: "{{ aws_public_ips | combine({item.item.key: item.outputs.big_ip_public_IPaddr.value}, recursive=True) }}"
+    with_items:
+       - "{{ terraform_return.results }}"
+
+  - debug:
+      msg: "Here is the list - {{ aws_public_ips }}"
+    when: debug_on == true
+
+  - name: Adding public IPs to aws variable
+    set_fact:
+      aws: "{{ aws|combine({ item.key : { 'public_ip': item.value }}, recursive=True) }}"
+       #guests: "{{ guests|combine({ current_host: {'tempip': tempip_reg.stdout_lines }}, recursive=True) }}"
+    with_dict:
+      - "{{aws_public_ips}}"
+  
+  - debug:
+      msg: "{{ aws }}"
+    when: debug_on == true

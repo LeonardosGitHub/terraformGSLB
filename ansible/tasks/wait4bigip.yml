@@ -1,6 +1,16 @@
+  - name: Here are the public_ip's that will be targeted to see if port 8443 is up
+    debug:
+      msg: "{{item.value.public_ip}}"
+    with_dict:
+      - "{{aws}}"
+    when: debug_on == true
+
   - name: Wait for BIG-IP to be available on port 8443 before proceeding < 600seconds
     wait_for:
-      host: "{{return.outputs.big_ip_public_IPaddr.value}}"
+      host: "{{item.value.public_ip}}"
       port: "8443"
-      timeout: 600
+      timeout: 300
+      #state: started
+    with_dict:
+      - "{{aws}}"
     delegate_to: localhost

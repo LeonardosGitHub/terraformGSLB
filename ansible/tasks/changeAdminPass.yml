@@ -1,10 +1,13 @@
   - name: Change BIG-IP admin password
     bigip_command:
       provider:
-        server: "{{return.outputs.big_ip_public_IPaddr.value}}"
-        ssh_keyfile: "{{ ssh_keyfile }}"
+        server: "{{item.value.public_ip}}"
+        ssh_keyfile: "~/.ssh/{{item.value.sshkey}}"
         transport: cli
         user: admin
       commands: modify auth user admin password {{bigip_password}}
       warn: no
     delegate_to: localhost
+    with_dict: 
+      - "{{aws}}"
+

@@ -1,13 +1,13 @@
-  #https://docs.ansible.com/ansible/latest/modules/terraform_module.html
-  - name: Deploy resources using Terraform
+  #https://docs.ansible.com/ansible/latest/modules/terraform_module.html  
+  - name: Deploy resources in AWS using Terraform
     terraform:
       force_init: yes
-      project_path: '{{ project_dir }}'
+      project_path: "../terraform/prod/{{item.value.region}}"
       state: present
-    register: return
+    with_dict:
+      - "{{ aws }}"
+    register: terraform_return
 
-  #- debug:
-  #   var: "return"
-
-  #- debug:
-  #   var: return.outputs.big_ip_public_IPaddr.value
+  - debug:
+      var: terraform_return
+    when: debug_on == true

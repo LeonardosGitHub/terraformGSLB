@@ -1,0 +1,55 @@
+---  
+- name: Initial GSLB cluster build; create, base configuration, cluster configs, ready for production traffic
+  
+  hosts: 127.0.0.1
+  gather_facts: no
+  vars:
+    aws:
+      us_east_1:
+        region: us-east-1
+        sshkey: leonardo_f5_aws.pem
+        public_ip:
+      us_east_2:
+        region: us-east-2
+        sshkey: f5_aws_acct_keypair.pem
+        public_ip: 
+      us_west_2:
+        region: us-west-2
+        sshkey: leonardo_oregon_aws.pem
+        public_ip:
+      ap_southeast_1:
+        region: ap-southeast-1
+        sshkey: leonardo_singapore_aws.pem
+        public_ip: 
+      eu_west_2:
+        region: eu-west-2
+        sshkey: leonardo_london_aws.pem
+        public_ip: 
+    aws_public_ips: {}
+    generic_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+    debug_on: false
+
+  tasks:
+
+  - name: Task to set password for BIG-IP
+    import_tasks: tasks/getpassword.yml
+
+  - name: Task to initiating task to Deploy BIG-IPs using Terraform - tasks/terraformDeploy.yml
+    import_tasks: tasks/terraformDeploy.yml
+
+  - name: Task to add BIG-IP'S public IPs to aws variable - tasks/createListPublicIPs.yml
+    import_tasks: tasks/createListPublicIPs.yml
+
+  - name: Task to check if port 8443 is open and active - tasks/wait4bigip.yml
+    import_tasks: tasks/wait4bigip.yml
+  
+  - name: Task to update Admin password - tasks/changeAdminPass.yml
+    import_tasks: tasks/changeAdminPass.yml
+  
+  - name: Task to check if iControl REST is available - tasks/wait4REST.yml
+    import_tasks: tasks/wait4REST.yml
+
+
+  
+
+
