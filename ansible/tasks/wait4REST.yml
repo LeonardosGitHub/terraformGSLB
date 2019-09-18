@@ -6,7 +6,7 @@
         server_port: 8443
         validate_certs: no
         user: admin
-        password: "{{ bigip_password }}"
+        password: "{{bigip_password}}"
     with_dict: 
       - "{{aws}}"
     delegate_to: localhost

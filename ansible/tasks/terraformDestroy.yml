@@ -1,0 +1,13 @@
+  #https://docs.ansible.com/ansible/latest/modules/terraform_module.html  
+  - name: Destroy resources in AWS using Terraform
+    terraform:
+      force_init: yes
+      project_path: "../terraform/prod/{{item.value.region}}"
+      state: absent
+    with_dict:
+      - "{{ aws }}"
+    register: terraform_return
+
+  - debug:
+      var: terraform_return
+    when: debug_on == true

@@ -1,0 +1,56 @@
+  - name: Use F5 Device Onboarding to provision BIG-IPs
+    uri:
+      url: https://{{item.value.public_ip}}:8443/mgmt/shared/declarative-onboarding
+      user: admin
+      password: "{{bigip_password}}"
+      method: POST
+      body: "{{ lookup('file','../files/deviceOnboarding.json') }}"
+      force_basic_auth: yes
+      body_format: json
+      validate_certs: no
+      status_code: [200,202]
+    with_dict:
+      - "{{aws}}"
+    register: DO_POST_return
+    tags:
+      - DO
+  
+  - name: Debug POST return
+    debug:
+      msg: "{{DO_POST_return}}"
+    when: debug_on == true
+
+  - name: Check if DO POST completed and was successful
+    uri:
+      url: https://{{item.results.item.value.public_ip}}:8443/mgmt/shared/declarative-onboarding/task/{{item.results.json.id}}
+      user: admin
+      password: "{{bigip_password}}"
+      force_basic_auth: yes
+      validate_certs: no
+      status_code: [200,202]
+    with_items:
+      - "{{DO_POST_return.results}}"
+    register: DO_GET_task_return
+    tags:
+      - DO
+
+
+  - name: Performing GET to obtain status of Device Onboarding POST
+    uri:
+      url: https://{{item.value.public_ip}}:8443/mgmt/shared/declarative-onboarding
+      user: admin
+      password: "{{bigip_password}}"
+      force_basic_auth: yes
+      validate_certs: no
+      status_code: [200,202]
+    with_dict:
+      - "{{aws}}"
+    register: DO_GET_return
+    tags:
+      - DO
+
+  - name: Debug GET return
+    debug:
+      msg: "{{DO_GET_return}}"
+    when: debug_on == true
+

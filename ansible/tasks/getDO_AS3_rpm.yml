@@ -1,0 +1,25 @@
+  - name: Install Declarative Onboarding rpm
+    bigip_lx_package:
+      package: "files/f5-declarative-onboarding-1.7.0-3.noarch.rpm"
+      provider:
+        server: "{{item.value.public_ip}}"
+        server_port: 8443
+        validate_certs: no
+        user: admin
+        password: "{{bigip_password}}"
+    with_dict:
+      - "{{aws}}"
+    delegate_to: localhost
+
+  - name: Install Application Services 3 rpm
+    bigip_lx_package:
+      package: "files/f5-appsvcs-3.14.0-4.noarch.rpm"
+      provider:
+        server: "{{item.value.public_ip}}"
+        server_port: 8443
+        validate_certs: no
+        user: admin
+        password: "{{bigip_password}}"
+    with_dict:
+      - "{{aws}}"
+    delegate_to: localhost

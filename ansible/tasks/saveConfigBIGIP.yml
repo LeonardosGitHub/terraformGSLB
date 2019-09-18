@@ -1,0 +1,14 @@
+  - name: Save BIG-IP config
+    bigip_config:
+      save: yes
+      provider:
+        server: "{{item.value.public_ip}}"
+        password: "{{bigip_password}}"
+        #ssh_keyfile: "~/.ssh/{{item.value.sshkey}}"
+        #transport: cli
+        user: admin
+        server_port: 8443
+        validate_certs: no
+    delegate_to: localhost
+    with_dict: 
+      - "{{aws}}"

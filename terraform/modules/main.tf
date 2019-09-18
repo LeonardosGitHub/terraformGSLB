@@ -81,10 +81,31 @@ resource "aws_security_group" "bigipexternalsecuritygroup" {
   }
 
   ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["174.232.139.189/32"]
+  }
+
+  ingress {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
     cidr_blocks = ["65.60.250.160/32"]
+  }
+
+  ingress {
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_blocks = ["174.232.139.189/32"]
+  }
+
+  ingress {
+    from_port   = 4353
+    to_port     = 4353
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   lifecycle {

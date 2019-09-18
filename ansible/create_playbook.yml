@@ -5,10 +5,10 @@
   gather_facts: no
   vars:
     aws:
-      us_east_1:
-        region: us-east-1
-        sshkey: leonardo_f5_aws.pem
-        public_ip:
+      #us_east_1:
+      #  region: us-east-1
+      #  sshkey: leonardo_f5_aws.pem
+      #  public_ip:
       us_east_2:
         region: us-east-2
         sshkey: f5_aws_acct_keypair.pem
@@ -17,17 +17,17 @@
         region: us-west-2
         sshkey: leonardo_oregon_aws.pem
         public_ip:
-      ap_southeast_1:
-        region: ap-southeast-1
-        sshkey: leonardo_singapore_aws.pem
-        public_ip: 
-      eu_west_2:
-        region: eu-west-2
-        sshkey: leonardo_london_aws.pem
-        public_ip: 
+      #ap_southeast_1:
+      #  region: ap-southeast-1
+      #  sshkey: leonardo_singapore_aws.pem
+      #  public_ip: 
+      #eu_west_2:
+      #  region: eu-west-2
+      #  sshkey: leonardo_london_aws.pem
+      #  public_ip: 
     aws_public_ips: {}
     generic_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
-    debug_on: false
+    debug_on: true
 
   tasks:
 
@@ -48,6 +48,15 @@
   
   - name: Task to check if iControl REST is available - tasks/wait4REST.yml
     import_tasks: tasks/wait4REST.yml
+  
+  - name: Task to save BIG-IP configuration - tasks/saveConfigBIGIP.yml
+    import_tasks: tasks/saveConfigBIGIP.yml
+
+  - name: Task to place DO & AS3 rmp on BIG-IPs - tasks/getDO_AS3_rpm.yml
+    import_tasks: tasks/getDO_AS3_rpm.yml
+
+  - name: Task to place base configurations onto BIG-IPs - tasks/deviceOnboarding.yml
+    import_tasks: tasks/deviceOnboarding.yml
 
 
   

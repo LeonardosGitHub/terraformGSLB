@@ -27,29 +27,11 @@
         public_ip: 
     aws_public_ips: {}
     generic_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
-    debug_on: false
+    debug_on: true
 
   tasks:
 
   - name: Task to set password for BIG-IP
-    import_tasks: tasks/getpassword.yml
-
-  - name: Task to initiating task to Deploy BIG-IPs using Terraform - tasks/terraformDeploy.yml
-    import_tasks: tasks/terraformDeploy.yml
-
-  - name: Task to add BIG-IP'S public IPs to aws variable - tasks/createListPublicIPs.yml
-    import_tasks: tasks/createListPublicIPs.yml
-
-  - name: Task to check if port 8443 is open and active - tasks/wait4bigip.yml
-    import_tasks: tasks/wait4bigip.yml
-  
-  - name: Task to update Admin password - tasks/changeAdminPass.yml
-    import_tasks: tasks/changeAdminPass.yml
-  
-  - name: Task to check if iControl REST is available - tasks/wait4REST.yml
-    import_tasks: tasks/wait4REST.yml
-
-
-  
-
+    import_tasks: tasks/terraformDestroy.yml
+    no_log: True
 
