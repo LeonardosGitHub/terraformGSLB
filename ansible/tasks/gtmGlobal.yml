@@ -1,0 +1,64 @@
+  - name: Configure GSLB synchronization settings
+    bigip_gtm_global:
+      synchronization: yes
+      synchronization_group_name: prod-group
+      synchronize_zone_files: no
+      provider:
+        server: "{{item.value.public_ip}}"
+        server_port: 8443
+        validate_certs: no
+        user: admin
+        password: "{{bigip_password}}"
+    with_dict: 
+      - "{{aws}}"
+    delegate_to: localhost
+
+  - name: Create GTM data center configuration
+    bigip_gtm_datacenter:
+      name: "{{item.value.region + '_DC'}}"
+      provider:
+        server: "{{aws.us_east_2.public_ip}}"
+        server_port: 8443
+        validate_certs: no
+        user: admin
+        password: "{{bigip_password}}"
+    with_dict: 
+      - "{{aws}}"
+    delegate_to: localhost
+
+
+  - name: Create servers on only one GTM, us_east_2, in prep for synchronization, bigip_add, and gtm_add
+    bigip_gtm_server:
+      name: "{{item.value.region + '_server'}}"
+      datacenter: "{{'/Common/' + item.value.region + '_DC' }}"
+      server_type: bigip
+      link_discovery: disabled
+      virtual_server_discovery: disabled
+      devices:
+      - name: "{{item.value.region + '_device'}}"
+        address: "{{item.value.public_ip}}"
+        #translation: "{{item.value.private_ip}}"
+      provider:
+        server: "{{aws.us_east_2.public_ip}}"
+        server_port: 8443
+        validate_certs: no
+        user: admin
+        password: "{{bigip_password}}"
+    delegate_to: localhost
+    with_dict: 
+      - "{{aws}}"
+
+  - name: bigip_add for all devices except us_east_2
+    expect:
+      command: run gtm bigip_add admin@{{aws.us-east-2.public_ip}}
+      responses:
+        Are you sure you want to continue connecting (yes/no)?: 'yes'
+        Password: "{{bigip_password}}"
+    # you don't want to show passwords in your logs
+    no_log: true
+    delegate_to: "{{item.value.public_ip}}"
+    with_dict:
+      - "{{aws}}"
+    when: {{item}} != 'us_east_2'
+
+

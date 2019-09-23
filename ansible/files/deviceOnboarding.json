@@ -9,6 +9,15 @@
             "class": "Provision",
             "ltm": "nominal",
             "gtm": "nominal"
-        }
+        },
+        "myNtp": {
+            "class": "NTP",
+            "servers": [
+                "0.pool.ntp.org",
+                "1.pool.ntp.org",
+                "2.pool.ntp.org"
+            ],
+            "timezone": "UTC"
+        },
     }
 }

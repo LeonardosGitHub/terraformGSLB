@@ -13,20 +13,16 @@
         region: us-east-2
         sshkey: f5_aws_acct_keypair.pem
         public_ip: 
+        private_ip: 
+        username: "admin"
       us_west_2:
         region: us-west-2
         sshkey: leonardo_oregon_aws.pem
-        public_ip:
-      #ap_southeast_1:
-      #  region: ap-southeast-1
-      #  sshkey: leonardo_singapore_aws.pem
-      #  public_ip: 
-      #eu_west_2:
-      #  region: eu-west-2
-      #  sshkey: leonardo_london_aws.pem
-      #  public_ip: 
+        public_ip: 
+        private_ip:
+        username: "admin"
     aws_public_ips: {}
-    generic_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+    #generic_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
     debug_on: true
 
   tasks:
@@ -57,6 +53,9 @@
 
   - name: Task to place base configurations onto BIG-IPs - tasks/deviceOnboarding.yml
     import_tasks: tasks/deviceOnboarding.yml
+
+  - name: Update GSLB global settings - tasks/gtmGlobal.yml
+    import_tasks: tasks/gtmGlobal.yml
 
 
   
