@@ -40,13 +40,19 @@ variable "subnet_cidr_block" {
   }
 }
 variable "ami" {
-  description = "asd"
+  description = "AMI for BIG-IP in each region"
   default = {
-    us-east-1      = "ami-0e8317e79370604a1"
-    us-east-2      = "ami-0842ee864d1e460bf"
-    us-west-2      = "ami-02e5101021b8c60c7"
-    eu-west-2      = "ami-05125a2b85e0d09d1"
-    ap-southeast-1 = "ami-0bc94dff5178064ac"
+    #us-east-1      = "ami-0e8317e79370604a1" #Version 13.1.1.4 PAYG Better 1Gbps
+    #us-east-2      = "ami-0842ee864d1e460bf" #Version 13.1.1.4 PAYG Better 1Gbps
+    #us-west-2      = "ami-02e5101021b8c60c7" #Version 13.1.1.4 PAYG Better 1Gbps
+    #eu-west-2      = "ami-05125a2b85e0d09d1" #Version 13.1.1.4 PAYG Better 1Gbps
+    #ap-southeast-1 = "ami-0bc94dff5178064ac" #Version 13.1.1.4 PAYG Better 1Gbps
+
+    us-east-1      = "ami-0e8317e79370604a1" #Version 14.1.2  PAYG Better 1Gbps
+    us-east-2      = "ami-0842ee864d1e460bf" #Version 14.1.2  PAYG Better 1Gbps
+    us-west-2      = "ami-0461f4b0861922ec5" #Version 14.1.2  PAYG Better 1Gbps
+    eu-west-2      = "ami-05125a2b85e0d09d1" #Version 14.1.2  PAYG Better 1Gbps
+    ap-southeast-1 = "ami-0bc94dff5178064ac" #Version 14.1.2  PAYG Better 1Gbps
   }
 }
 
