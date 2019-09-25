@@ -1,6 +1,10 @@
 # Create 5 node F5 DNS/GTM cluster using Ansible and Terraform
 
-
+## Usage
+ - To create the cluster
+   - /ansible/ansible-playbook deploy_playbook.yml
+ - To destroy the cluster
+   - /ansible/ansible-playbook destroy_playbook.yml
 
 ## Ansible
  - Playbook:
