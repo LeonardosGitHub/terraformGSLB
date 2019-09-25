@@ -3,7 +3,7 @@
 
 
 ## Ansible
- - Provisions 
+ - Playbook:
    - creates 'admin' password for BIG-IPs
    - Performs a Terraform apply to create AWS elements
    - waits for port 8443 to be available on BIG-IPs
@@ -20,7 +20,7 @@
 
 
 ## Terraform
- - Create's 
+ - Create the following in 5 regions, us-east-1, us-east-2, us-west-2,eu-west-2, ap-southeast-1 : 
    - VPC
    - Subnet
    - Internet Gateway
