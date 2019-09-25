@@ -55,7 +55,7 @@
   - name: Task to place DO & AS3 rmp on BIG-IPs - tasks/getDO_AS3_rpm.yml
     import_tasks: tasks/getDO_AS3_rpm.yml
 
-  - name: Task to place base configurations onto BIG-IPs - tasks/deviceOnboarding.yml
+  - name: Task to deploy DO to BIG-IPs - tasks/deviceOnboarding.yml
     import_tasks: tasks/deviceOnboarding.yml
 
   - name: Update GSLB global settings - tasks/gtmGlobal.yml
