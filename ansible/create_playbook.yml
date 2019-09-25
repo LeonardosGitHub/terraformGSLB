@@ -5,10 +5,12 @@
   gather_facts: no
   vars:
     aws:
-      #us_east_1:
-      #  region: us-east-1
-      #  sshkey: leonardo_f5_aws.pem
-      #  public_ip:
+      us_east_1:
+        region: us-east-1
+        sshkey: leonardo_f5_aws.pem
+        public_ip:
+        private_ip:
+        username: "admin"
       us_east_2:
         region: us-east-2
         sshkey: f5_aws_acct_keypair.pem
@@ -19,6 +21,18 @@
         region: us-west-2
         sshkey: leonardo_oregon_aws.pem
         public_ip: 
+        private_ip:
+        username: "admin"
+      eu_west_2:
+        region: eu-west-2
+        sshkey: leonardo_london_aws.pem
+        public_ip:
+        private_ip:
+        username: "admin"
+      ap_southeast_1:
+        region: ap-southeast-1
+        sshkey: leonardo_singapore_aws.pem
+        public_ip:
         private_ip:
         username: "admin"
     aws_public_ips: {}

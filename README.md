@@ -2,7 +2,7 @@
 
 ## Usage
  - To create the cluster
-   - /ansible/ansible-playbook deploy_playbook.yml
+   - /ansible/ansible-playbook create_playbook.yml
  - To destroy the cluster
    - /ansible/ansible-playbook destroy_playbook.yml
 
