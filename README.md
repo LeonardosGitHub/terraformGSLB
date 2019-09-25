@@ -20,7 +20,7 @@
 
 
 ## Terraform
- - Create the following in 5 regions, us-east-1, us-east-2, us-west-2,eu-west-2, ap-southeast-1 : 
+ - Create the below in 5 regions: us-east-1, us-east-2, us-west-2,eu-west-2, ap-southeast-1
    - VPC
    - Subnet
    - Internet Gateway
