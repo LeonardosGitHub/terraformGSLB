@@ -1,5 +1,5 @@
 ---  
-- name: Initial GSLB cluster build; create, base configuration, cluster configs, ready for production traffic
+- name: Task to destroy environment using Terraform
   
   hosts: 127.0.0.1
   gather_facts: no
@@ -31,7 +31,7 @@
 
   tasks:
 
-  - name: Task to set password for BIG-IP
+  - name: Task to destroy environment using Terraform
     import_tasks: tasks/terraformDestroy.yml
-    no_log: True
+    
 

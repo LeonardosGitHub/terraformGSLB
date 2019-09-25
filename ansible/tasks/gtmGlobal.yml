@@ -13,7 +13,7 @@
       - "{{aws}}"
     delegate_to: localhost
 
-  - name: Create GTM data center configuration
+  - name: Create GTM data center configuration on **us_east_2** only
     bigip_gtm_datacenter:
       name: "{{item.value.region + '_DC'}}"
       provider:
@@ -27,7 +27,7 @@
     delegate_to: localhost
 
 
-  - name: Create servers on only one GTM, us_east_2, in prep for synchronization, bigip_add, and gtm_add
+  - name: Create Servers in prep for synchronization, bigip_add, and gtm_add on **us_east_2** only
     bigip_gtm_server:
       name: "{{item.value.region + '_server'}}"
       datacenter: "{{'/Common/' + item.value.region + '_DC' }}"
@@ -37,7 +37,7 @@
       devices:
       - name: "{{item.value.region + '_device'}}"
         address: "{{item.value.public_ip}}"
-        #translation: "{{item.value.private_ip}}"
+        translation: "{{item.value.private_ip}}"
       provider:
         server: "{{aws.us_east_2.public_ip}}"
         server_port: 8443
@@ -47,18 +47,36 @@
     delegate_to: localhost
     with_dict: 
       - "{{aws}}"
-
-  - name: bigip_add for all devices except us_east_2
-    expect:
-      command: run gtm bigip_add admin@{{aws.us-east-2.public_ip}}
-      responses:
-        Are you sure you want to continue connecting (yes/no)?: 'yes'
-        Password: "{{bigip_password}}"
-    # you don't want to show passwords in your logs
-    no_log: true
-    delegate_to: "{{item.value.public_ip}}"
+  
+  - name: Use REST to perform bigip_add on all devices **except** us_east_2
+    uri:
+      url: https://{{item.value.public_ip}}:8443/mgmt/tm/gtm/bigip_add
+      user: admin
+      password: "{{bigip_password}}"
+      method: POST
+      body: "{\"command\":\"run\",\"options\":[{\"ssh-password\":\"{{bigip_password}}\",\"admin@{{aws.us_east_2.public_ip}}\":\"\"}]}"
+      force_basic_auth: yes
+      body_format: json
+      validate_certs: no
+      status_code: [200,202]
     with_dict:
       - "{{aws}}"
-    when: {{item}} != 'us_east_2'
+    register: bigip_add_POST_return
+    when: item.key != "us_east_2"
 
+  - name: Use REST to perform gtm_add on all devices **except** us_east_2
+    uri:
+      url: https://{{item.value.public_ip}}:8443/mgmt/tm/gtm/gtm_add
+      user: admin
+      password: "{{bigip_password}}"
+      method: POST
+      body: "{\"command\":\"run\",\"options\":[{\"ssh-password\":\"{{bigip_password}}\",\"admin@{{aws.us_east_2.public_ip}}\":\"\"}]}"
+      force_basic_auth: yes
+      body_format: json
+      validate_certs: no
+      status_code: [200,202]
+    with_dict:
+      - "{{aws}}"
+    register: gtm_add_add_POST_return
+    when: item.key != "us_east_2"
 

@@ -6,7 +6,7 @@
         transport: cli
         user: admin
         timeout: 60
-      commands: modify auth user admin password {{bigip_password}}
+      commands: modify auth user admin password {{bigip_password}} shell bash
       warn: no
     delegate_to: localhost
     with_dict: 

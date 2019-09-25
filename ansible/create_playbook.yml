@@ -22,6 +22,7 @@
         private_ip:
         username: "admin"
     aws_public_ips: {}
+    aws_private_ips: {}
     #generic_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
     debug_on: true
 
@@ -35,6 +36,9 @@
 
   - name: Task to add BIG-IP'S public IPs to aws variable - tasks/createListPublicIPs.yml
     import_tasks: tasks/createListPublicIPs.yml
+
+  - name: Task to add BIG-IP'S private IPs to aws variable - tasks/createListPrivateIPs.yml
+    import_tasks: tasks/createListPrivateIPs.yml
 
   - name: Task to check if port 8443 is open and active - tasks/wait4bigip.yml
     import_tasks: tasks/wait4bigip.yml

@@ -1,0 +1,21 @@
+
+  - name: Create list of AWS private IPs
+    set_fact:
+      aws_private_ips: "{{ aws_private_ips | combine({item.item.key: item.outputs.big_ip_private_IPaddr.value}, recursive=True) }}"
+    with_items:
+       - "{{ terraform_return.results }}"
+
+  - debug:
+      msg: "Here is the list of private IPs - {{ aws_private_ips }}"
+    when: debug_on == true
+
+  - name: Adding private IPs to aws variable
+    set_fact:
+      aws: "{{ aws|combine({ item.key : { 'private_ip': item.value }}, recursive=True) }}"
+       #guests: "{{ guests|combine({ current_host: {'tempip': tempip_reg.stdout_lines }}, recursive=True) }}"
+    with_dict:
+      - "{{aws_private_ips}}"
+  
+  - debug:
+      msg: "{{ aws }}"
+    when: debug_on == true
