@@ -38,7 +38,7 @@
     aws_public_ips: {}
     aws_private_ips: {}
     #generic_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
-    debug_on: true
+    debug_on: false
 
   tasks:
 
@@ -74,6 +74,9 @@
 
   - name: Update GSLB global settings - tasks/gtmGlobal.yml
     import_tasks: tasks/gtmGlobal.yml
+
+  - name: Final ouput to verify environments - tasks/finalOutput.yml
+    import_tasks: tasks/finalOutput.yml
 
 
   

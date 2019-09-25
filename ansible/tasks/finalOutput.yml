@@ -1,0 +1,8 @@
+  - name: Show Output
+    debug: 
+      msg:
+        - "Password is {{bigip_password}}"
+        - "{{item.value.region}}: https://{{item.value.public_ip}}:8443/"
+        - ""
+    with_dict:
+      - "{{aws}}"
