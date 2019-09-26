@@ -3,6 +3,7 @@
   
   hosts: 127.0.0.1
   gather_facts: no
+  
   vars:
     aws:
       us_east_1:
@@ -10,34 +11,34 @@
         sshkey: leonardo_f5_aws.pem
         public_ip:
         private_ip:
-        username: "admin"
+        username: "{{bigip_username}}"
       us_east_2:
         region: us-east-2
         sshkey: f5_aws_acct_keypair.pem
         public_ip: 
         private_ip: 
-        username: "admin"
+        username: "{{bigip_username}}"
       us_west_2:
         region: us-west-2
         sshkey: leonardo_oregon_aws.pem
         public_ip: 
         private_ip:
-        username: "admin"
+        username: "{{bigip_username}}"
       eu_west_2:
         region: eu-west-2
         sshkey: leonardo_london_aws.pem
         public_ip:
         private_ip:
-        username: "admin"
+        username: "{{bigip_username}}"
       ap_southeast_1:
         region: ap-southeast-1
         sshkey: leonardo_singapore_aws.pem
         public_ip:
         private_ip:
-        username: "admin"
+        username: "{{bigip_username}}"
     aws_public_ips: {}
     aws_private_ips: {}
-    #generic_password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+    bigip_username: ansible
     debug_on: false
 
   tasks:
@@ -57,14 +58,11 @@
   - name: Task to check if port 8443 is open and active - tasks/wait4bigip.yml
     import_tasks: tasks/wait4bigip.yml
   
-  - name: Task to update Admin password - tasks/changeAdminPass.yml
-    import_tasks: tasks/changeAdminPass.yml
+  - name: Task to create Ansible User to use during play - tasks/createAnsibleUser.yml
+    import_tasks: tasks/createAnsibleUser.yml
   
   - name: Task to check if iControl REST is available - tasks/wait4REST.yml
     import_tasks: tasks/wait4REST.yml
-  
-  - name: Task to save BIG-IP configuration - tasks/saveConfigBIGIP.yml
-    import_tasks: tasks/saveConfigBIGIP.yml
 
   - name: Task to place DO & AS3 rmp on BIG-IPs - tasks/getDO_AS3_rpm.yml
     import_tasks: tasks/getDO_AS3_rpm.yml
@@ -74,9 +72,17 @@
 
   - name: Update GSLB global settings - tasks/gtmGlobal.yml
     import_tasks: tasks/gtmGlobal.yml
+  
+  - name: Task to delete Ansible user - tasks/deleteAnsibleUser.yml
+    import_tasks: tasks/deleteAnsibleUser.yml
+
+  - name: Task to save BIG-IP configuration - tasks/saveConfigBIGIP.yml
+    import_tasks: tasks/saveConfigBIGIP.yml
 
   - name: Final ouput to verify environments - tasks/finalOutput.yml
     import_tasks: tasks/finalOutput.yml
+  
+ 
 
 
   

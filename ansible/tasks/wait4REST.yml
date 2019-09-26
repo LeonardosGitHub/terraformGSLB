@@ -5,7 +5,7 @@
         server: "{{item.value.public_ip}}"
         server_port: 8443
         validate_certs: no
-        user: admin
+        user: "{{bigip_username}}"
         password: "{{bigip_password}}"
     with_dict: 
       - "{{aws}}"

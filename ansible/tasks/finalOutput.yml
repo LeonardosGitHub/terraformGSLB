@@ -1,8 +1,8 @@
-  - name: Show Output
+  - name: Show public IP's and password to check your work
     debug: 
       msg:
-        - "Password is {{bigip_password}}"
-        - "{{item.value.region}}: https://{{item.value.public_ip}}:8443/"
+        #- "Ansible password is {{bigip_password}}"
+        - "{{item.value.region}} Public IP address: {{item.value.public_ip}}"
         - ""
     with_dict:
       - "{{aws}}"

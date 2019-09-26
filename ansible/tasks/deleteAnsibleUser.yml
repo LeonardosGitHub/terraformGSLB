@@ -1,5 +1,5 @@
-
-  - name: Add new user **ansible** to BIG-IP for use in the playbook
+  
+  - name: Remove the **ansible** user from BIG-IP
     bigip_command:
       provider:
         server: "{{item.value.public_ip}}"
@@ -7,7 +7,7 @@
         transport: cli
         user: admin
         timeout: 60
-      commands: create auth user {{bigip_username}} { password {{bigip_password}} partition-access add { all-partitions { role admin } } shell bash }
+      commands: delete auth user {{bigip_username}}
       warn: no
     delegate_to: localhost
     with_dict: 

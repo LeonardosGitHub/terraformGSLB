@@ -1,14 +1,29 @@
-  - name: Save BIG-IP config
-    bigip_config:
-      save: yes
+
+  - name: Perfom save config on BIG-IP
+    bigip_command:
       provider:
         server: "{{item.value.public_ip}}"
-        password: "{{bigip_password}}"
-        #ssh_keyfile: "~/.ssh/{{item.value.sshkey}}"
-        #transport: cli
+        ssh_keyfile: "~/.ssh/{{item.value.sshkey}}"
+        transport: cli
         user: admin
-        server_port: 8443
-        validate_certs: no
+        timeout: 60
+      commands: save sys config partitions all 
+      warn: no
     delegate_to: localhost
     with_dict: 
       - "{{aws}}"
+
+#  - name: Save BIG-IP config
+#    bigip_config:
+#      save: yes
+#      provider:
+#        server: "{{item.value.public_ip}}"
+#        password: "{{bigip_password}}"
+#        #ssh_keyfile: "~/.ssh/{{item.value.sshkey}}"
+#        #transport: cli
+#        user: "{{bigip_username}}"
+#        server_port: 8443
+#        validate_certs: no
+#    delegate_to: localhost
+#    with_dict: 
+#      - "{{aws}}"

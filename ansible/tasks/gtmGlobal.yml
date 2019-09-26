@@ -7,7 +7,7 @@
         server: "{{item.value.public_ip}}"
         server_port: 8443
         validate_certs: no
-        user: admin
+        user: "{{bigip_username}}"
         password: "{{bigip_password}}"
     with_dict: 
       - "{{aws}}"
@@ -20,7 +20,7 @@
         server: "{{aws.us_east_2.public_ip}}"
         server_port: 8443
         validate_certs: no
-        user: admin
+        user: "{{bigip_username}}"
         password: "{{bigip_password}}"
     with_dict: 
       - "{{aws}}"
@@ -42,7 +42,7 @@
         server: "{{aws.us_east_2.public_ip}}"
         server_port: 8443
         validate_certs: no
-        user: admin
+        user: "{{bigip_username}}"
         password: "{{bigip_password}}"
     delegate_to: localhost
     with_dict: 
@@ -51,7 +51,7 @@
   - name: Use REST to perform bigip_add on all devices **except** us_east_2
     uri:
       url: https://{{item.value.public_ip}}:8443/mgmt/tm/gtm/bigip_add
-      user: admin
+      user: "{{bigip_username}}"
       password: "{{bigip_password}}"
       method: POST
       body: "{\"command\":\"run\",\"options\":[{\"ssh-password\":\"{{bigip_password}}\",\"admin@{{aws.us_east_2.public_ip}}\":\"\"}]}"
@@ -67,7 +67,7 @@
   - name: Use REST to perform gtm_add on all devices **except** us_east_2
     uri:
       url: https://{{item.value.public_ip}}:8443/mgmt/tm/gtm/gtm_add
-      user: admin
+      user: "{{bigip_username}}"
       password: "{{bigip_password}}"
       method: POST
       body: "{\"command\":\"run\",\"options\":[{\"ssh-password\":\"{{bigip_password}}\",\"admin@{{aws.us_east_2.public_ip}}\":\"\"}]}"
