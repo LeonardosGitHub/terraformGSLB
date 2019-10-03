@@ -32,3 +32,27 @@
    - Security Groups for: 
    - BIG-IP PAYG Better 1Gbps with version 14.1.2
 
+## What you may need to update for your environment
+  - Update your Declarative Onboarding declaration
+    - /ansible/files/deviceOnboarding.jsonansible-playbook create_playbook.yml
+    - NTP, DNS, Auth, SNMP, etc., as needed
+    - Documentation:
+      - https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/
+
+  - Update Terraform main.tf to match your needs
+    - /terraform/modules/main.tf
+      - Security Group settings - allow the traffic necessary for communication. SSH, Mgmt, iQuery, etc
+      - AWS_Instance - F5 BIG-IP
+        - instance type
+  - Update Terraform vars.tf to match your needs
+    - /terraform/modules/vars.tf
+      - update variable "aws_region" to the regions you'd like to deploy to
+      - update variable "ami" to the AMI's for the specific regions you've identified
+      - update variable "key_pair" to your key's for each region
+
+## Versions
+  - Ansible: 2.8.5
+  - Terraform: 0.12.1
+  - F5 Declarative Onboarding: 1.7
+  - F5 Application Services 3: 3.14
+  - AWS cli: aws-cli/1.16.170 Python/3.7.3 Darwin/18.7.0 botocore/1.12.160
