@@ -33,18 +33,22 @@
    - BIG-IP PAYG Better 1Gbps with version 14.1.2
 
 ## What you may need to update for your environment
-  - Update your Declarative Onboarding declaration
+  - Ansible, update Declarative Onboarding declaration
     - /ansible/files/deviceOnboarding.json
     - NTP, DNS, Auth, SNMP, etc., as needed
     - Documentation:
       - https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/
+  - Ansible, update create_playbook.yml
+    - /ansible/create_playbook.yml
+    - update the aws variable with appropriate regions & keys
+      - note the first region name has underscores in the name, this is due to an Ansible restriction.  The region key has the correct value with dashes.
 
-  - Update Terraform main.tf to match your needs
+  - Terraform, update main.tf to match your needs
     - /terraform/modules/main.tf
       - Security Group settings - allow the traffic necessary for communication. SSH, Mgmt, iQuery, etc
       - AWS_Instance - F5 BIG-IP
         - instance type
-  - Update Terraform vars.tf to match your needs
+  - Terraform, update vars.tf to match your needs
     - /terraform/modules/vars.tf
       - update the variable section "aws_region" to the regions you're targeting
       - update the variable section "ami" to the AMI's for the regions you're targeting 
