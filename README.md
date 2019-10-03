@@ -3,6 +3,7 @@
 ## Usage
  - To create the cluster
    - /ansible/ansible-playbook create_playbook.yml
+   - A user, ansible, is created and destroyed as part of the playbook
  - To destroy the cluster
    - /ansible/ansible-playbook destroy_playbook.yml
 
