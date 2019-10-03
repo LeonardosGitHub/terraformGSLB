@@ -34,7 +34,7 @@
 
 ## What you may need to update for your environment
   - Update your Declarative Onboarding declaration
-    - /ansible/files/deviceOnboarding.jsonansible-playbook create_playbook.yml
+    - /ansible/files/deviceOnboarding.json
     - NTP, DNS, Auth, SNMP, etc., as needed
     - Documentation:
       - https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/
@@ -46,9 +46,9 @@
         - instance type
   - Update Terraform vars.tf to match your needs
     - /terraform/modules/vars.tf
-      - update variable "aws_region" to the regions you'd like to deploy to
-      - update variable "ami" to the AMI's for the specific regions you've identified
-      - update variable "key_pair" to your key's for each region
+      - update the variable section "aws_region" to the regions you're targeting
+      - update the variable section "ami" to the AMI's for the regions you're targeting 
+      - update the variable section "key_pair" to match your key's for each region
 
 ## Versions
   - Ansible: 2.8.5
