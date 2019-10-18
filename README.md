@@ -9,7 +9,7 @@
 
 ## Ansible
  - Playbook:
-   - Creates 'ansible' user and password for BIG-IPs
+   - Creates and destroys 'ansible' user and password for BIG-IPs
    - Performs a Terraform apply to create AWS elements
    - Waits for port 8443 to be available on BIG-IPs
    - Updates password for 'admin' and sets shell to bash
